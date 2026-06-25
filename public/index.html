@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Pengaduan Pelanggaran Pendidikan</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <i class="fas fa-graduation-cap"></i>
+                    <div>
+                        <h1>Sistem Pengaduan Pelanggaran</h1>
+                        <p class="tagline">Lingkungan Pendidikan - Untuk Transparansi dan Perbaikan</p>
+                    </div>
+                </div>
+                <nav class="main-nav">
+                    <a href="#" class="nav-link active" id="nav-report"><i class="fas fa-plus-circle"
+                            onclick="switchToReportAndScroll(); return false;"></i>
+                        Buat
+                        Laporan</a>
+                    <a href="#" class="nav-link" id="nav-status"><i class="fas fa-clipboard-list"
+                            onclick="switchToStatusAndScroll(); return false;"></i> Status
+                        Laporan</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="main-content">
+            <!-- Hero Section -->
+            <section class="hero">
+                <h2>Sistem Pelaporan Indikasi Pelanggaran</h2>
+                <p>Sistem ini dirancang untuk mencatat pelanggaran di lingkungan pendidikan (kampus/sekolah) dengan
+                    tujuan transparansi dan perbaikan, bukan untuk menghukum. Laporan yang masuk akan diproses dan
+                    ditindaklanjuti secara profesional.</p>
+                <div class="alert alert-success">
+                    <i class="fas fa-info-circle"></i>
+                    <div>
+                        <strong>Privasi Terjaga:</strong> Identitas pelapor akan dijaga kerahasiaannya dan hanya
+                        digunakan untuk keperluan verifikasi.
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tabs Section -->
+            <div class="tabs">
+                <div class="tab active" id="tab-report">Buat Laporan Baru</div>
+                <div class="tab" id="tab-status">Cek Status Laporan</div>
+            </div>
+
+            <!-- Report Form Tab -->
+            <div id="report-tab" class="tab-content active">
+                <div class="card">
+                    <h3 class="section-title">Formulir Pengaduan Pelanggaran</h3>
+                    <p>Silakan isi formulir berikut dengan data yang benar dan lengkap. Field dengan tanda (*) wajib
+                        diisi.</p>
+
+                    <form id="complaint-form">
+                        <!-- Pelapor -->
+                        <div class="form-group" id="form-group">
+                            <h4>Identitas Pelapor</h4>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="reporter-name" class="form-label">Nama Lengkap *</label>
+                                <input type="text" id="reporter-name" class="form-control"
+                                    placeholder="Masukkan nama lengkap" required>
+                                <div class="form-error" id="name-error"></div>
+                            </div>
+                            <div class="form-col">
+                                <label for="reporter-id" class="form-label">NIM/NIS *</label>
+                                <input type="text" id="reporter-id" class="form-control"
+                                    placeholder="Masukkan NIM atau NIS" required>
+                                <div class="form-error" id="id-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="reporter-role" class="form-label">Peran Pelapor *</label>
+                                <select id="reporter-role" class="form-control" required>
+                                    <option value="">Pilih peran Anda</option>
+                                    <option value="Mahasiswa">Mahasiswa</option>
+                                    <option value="Siswa">Siswa</option>
+                                    <option value="Dosen">Dosen/Guru</option>
+                                    <option value="Staff">Staff Administrasi</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                                <div class="form-error" id="role-error"></div>
+                            </div>
+                            <div class="form-col">
+                                <label for="reporter-email" class="form-label">Email *</label>
+                                <input type="email" id="reporter-email" class="form-control"
+                                    placeholder="nama@contoh.com" required>
+                                <div class="form-error" id="email-error"></div>
+                            </div>
+                        </div>
+
+                        <!-- Pelanggaran -->
+                        <div class="form-group" style="margin-top: 30px;">
+                            <h4>Detail Pelanggaran</h4>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="violation-type" class="form-label">Jenis Pelanggaran *</label>
+                                <select id="violation-type" class="form-control" required>
+                                    <option value="">Pilih jenis pelanggaran</option>
+                                    <option value="Keterlambatan">Keterlambatan</option>
+                                    <option value="Pelanggaran Tata Tertib">Pelanggaran Tata Tertib</option>
+                                    <option value="Kecurangan Akademik">Kecurangan Akademik</option>
+                                    <option value="Perilaku Tidak Pantas">Perilaku Tidak Pantas</option>
+                                    <option value="Pelanggaran Etika">Pelanggaran Etika</option>
+                                    <option value="Lainnya">Lainnya</option>
+                                </select>
+                                <div class="form-error" id="violation-error"></div>
+                            </div>
+                            <div class="form-col">
+                                <label for="violation-date" class="form-label">Tanggal Kejadian *</label>
+                                <input type="date" id="violation-date" class="form-control" required>
+                                <div class="form-error" id="date-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-col">
+                                <label for="violation-time" class="form-label">Waktu Kejadian (opsional)</label>
+                                <input type="time" id="violation-time" class="form-control">
+                            </div>
+                            <div class="form-col">
+                                <label for="violation-location" class="form-label">Lokasi Kejadian *</label>
+                                <input type="text" id="violation-location" class="form-control"
+                                    placeholder="Contoh: Ruang Kelas 301, Laboratorium Komputer" required>
+                                <div class="form-error" id="location-error"></div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="violation-description" class="form-label">Deskripsi Kejadian *</label>
+                            <textarea id="violation-description" class="form-control" rows="5"
+                                placeholder="Jelaskan secara detail apa yang terjadi, siapa yang terlibat, dan kronologi kejadiannya..."
+                                required></textarea>
+                            <div class="form-error" id="description-error"></div>
+                        </div>
+
+                        <!-- File Upload -->
+                        <div class="form-group">
+                            <label class="form-label">Upload Bukti Pendukung (Opsional)</label>
+                            <div class="file-upload" id="file-upload-area">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <p>Seret dan lepas file di sini atau klik untuk memilih file</p>
+                                <p class="text-muted">Format yang didukung: JPG, PNG, PDF, DOC (maks. 5MB)</p>
+                                <input type="file" id="evidence-file" class="hidden"
+                                    accept=".jpg,.jpeg,.png,.pdf,.doc,.docx">
+                                <div id="file-name" style="margin-top: 10px; font-weight: 600;"></div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">
+                                <i class="fas fa-paper-plane"></i> Kirim Laporan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Status Tab -->
+            <div id="status-tab" class="tab-content">
+                <div class="card">
+                    <h3 class="section-title">Cek Status Laporan</h3>
+                    <p>Masukkan ID laporan yang Anda terima setelah mengirim pengaduan untuk melihat status terkini.</p>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <label for="report-id-check" class="form-label">ID Laporan</label>
+                            <input type="text" id="report-id-check" class="form-control"
+                                placeholder="Masukkan ID laporan (contoh: LP-2023-001)">
+                        </div>
+                        <div class="form-col">
+                            <label for="reporter-id-check" class="form-label">NIM/NIS Anda</label>
+                            <input type="text" id="reporter-id-check" class="form-control"
+                                placeholder="Masukkan NIM/NIS Anda">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <button id="check-status-btn" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Cek Status Laporan
+                        </button>
+                    </div>
+
+                    <!-- Status Results -->
+                    <div id="status-results" class="hidden">
+                        <div class="report-summary">
+                            <h4>Detail Laporan</h4>
+                            <div class="report-item">
+                                <span class="report-label">ID Laporan:</span>
+                                <span class="report-value" id="status-report-id">-</span>
+                            </div>
+                            <div class="report-item">
+                                <span class="report-label">Nama Pelapor:</span>
+                                <span class="report-value" id="status-reporter-name">-</span>
+                            </div>
+                            <div class="report-item">
+                                <span class="report-label">Jenis Pelanggaran:</span>
+                                <span class="report-value" id="status-violation-type">-</span>
+                            </div>
+                            <div class="report-item">
+                                <span class="report-label">Tanggal Kejadian:</span>
+                                <span class="report-value" id="status-violation-date">-</span>
+                            </div>
+                            <div class="report-item">
+                                <span class="report-label">Status Laporan:</span>
+                                <span class="report-value"><span id="status-badge" class="status-badge">-</span></span>
+                            </div>
+                            <div class="report-item">
+                                <span class="report-label">Tanggal Pengajuan:</span>
+                                <span class="report-value" id="status-submission-date">-</span>
+                            </div>
+                            <div class="report-item">
+                                <span class="report-label">Keterangan:</span>
+                                <span class="report-value" id="status-notes">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Reports -->
+                    <div id="recent-reports">
+                        <h4>Laporan Terbaru Anda</h4>
+                        <div id="reports-list">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- konirmasi laporan -->
+            <div id="confirmation-section" class="hidden">
+                <div class="card">
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <div>
+                            <h3>Laporan Anda Berhasil Dikirim!</h3>
+                            <p>Laporan pelanggaran telah berhasil direkam. Simpan ID laporan untuk melacak status tindak
+                                lanjut.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="section-title">Ringkasan Laporan</h3>
+
+                    <div class="report-summary">
+                        <div class="report-item">
+                            <span class="report-label">ID Laporan:</span>
+                            <span class="report-value" id="confirmation-id">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Nama Pelapor:</span>
+                            <span class="report-value" id="confirmation-name">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">NIM/NIS:</span>
+                            <span class="report-value" id="confirmation-nim">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Peran:</span>
+                            <span class="report-value" id="confirmation-role">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Jenis Pelanggaran:</span>
+                            <span class="report-value" id="confirmation-violation">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Tanggal Kejadian:</span>
+                            <span class="report-value" id="confirmation-date">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Lokasi Kejadian:</span>
+                            <span class="report-value" id="confirmation-location">-</span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Status Laporan:</span>
+                            <span class="report-value"><span id="confirmation-status"
+                                    class="status-badge status-submitted">Diajukan</span></span>
+                        </div>
+                        <div class="report-item">
+                            <span class="report-label">Tanggal Pengajuan:</span>
+                            <span class="report-value" id="confirmation-submit-date">-</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <p><strong>Catatan:</strong> Tim penanganan akan memproses laporan Anda dalam 1-3 hari kerja.
+                            Anda dapat melacak status laporan menggunakan ID di atas.</p>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-col">
+                            <button id="new-report-btn" class="btn btn-primary btn-block">
+                                <i class="fas fa-plus-circle"></i> Buat Laporan Baru
+                            </button>
+                        </div>
+                        <div class="form-col">
+                            <button id="check-report-btn" class="btn btn-success btn-block">
+                                <i class="fas fa-clipboard-list"></i> Cek Status Laporan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <!-- Dark/Light Mode Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" title="Ganti Tema">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-graduation-cap"></i> Sistem Pengaduan Pelanggaran</h3>
+                    <p>Sistem ini dirancang untuk lingkungan pendidikan dengan tujuan transparansi dan perbaikan, bukan
+                        untuk menghukum.</p>
+                    <p>Setiap laporan akan ditangani secara profesional dan kerahasiaan identitas pelapor akan dijaga.
+                    </p>
+                </div>
+
+                <div class="footer-section">
+                    <h3><i class="fas fa-info-circle"></i> Informasi</h3>
+                    <p><i class="fas fa-check-circle"></i> Laporan diproses dalam 1-3 hari kerja</p>
+                    <p><i class="fas fa-shield-alt"></i> Data pelapor dilindungi kerahasiaannya</p>
+                    <p><i class="fas fa-history"></i> Lacak status laporan kapan saja</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3><i class="fas fa-envelope"></i> Kontak</h3>
+                    <p><i class="fas fa-university"></i> Unit Penanganan Pelanggaran</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Gedung Administrasi Lt. 2</p>
+                    <p><i class="fas fa-phone"></i> (021) 1234-5678</p>
+                    <p><i class="fas fa-envelope"></i> pengaduan@kampuspendidikan.ac.id</p>
+                </div>
+            </div>
+
+            <div class="copyright">
+                <p> &copy; 2026 Sistem Informasi Pengaduan Pelanggaran Pendidikan. Hak Cipta Dilindungi.</p>
+                <p>Dibangun dengan tujuan untuk transparansi dan perbaikan lingkungan pendidikan.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Sistem Pengaduan Pelanggaran</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --gray-color: #95a5a6;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: var(--primary-color);
+            padding: 20px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .header h1 {
+            color: var(--light-color);
+            font-size: 1.5rem;
+        }
+
+        .header h1 i {
+            color: var(--secondary-color);
+            margin-right: 10px;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
+        }
+
+        .btn-primary {
+            background: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-danger {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .btn-small {
+            padding: 5px 12px;
+            font-size: 12px;
+            margin: 2px;
+        }
+
+        /* Login Card */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card h2 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .login-card h2 i {
+            color: var(--secondary-color);
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 14px;
+        }
+
+        .login-card input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        .login-card button {
+            width: 100%;
+            padding: 12px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .login-card button:hover {
+            background: #2980b9;
+        }
+
+        .error-msg {
+            color: var(--accent-color);
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        /* Update Select Color */
+        .status-select {
+            padding: 5px 10px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Variasi Warna */
+        .status-select.submitted {
+            background-color: #6c757d;
+            /* Abu-abu */
+        }
+
+        .status-select.process {
+            background-color: #007bff;
+            /* Biru */
+        }
+
+        .status-select.completed {
+            background-color: #28a745;
+            /* Hijau */
+        }
+
+        .status-select.rejected {
+            background-color: #dc3545;
+            /* Merah */
+        }
+
+        /* Supaya saat diklik (dropdown kebuka) teks di dalamnya tetap terbaca */
+        .status-select option {
+            background-color: white;
+            color: black;
+        }
+
+
+
+        /* Stats Cards */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card h3 {
+            color: var(--gray-color);
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .stat-card.total .number {
+            color: var(--primary-color);
+        }
+
+        .stat-card.submitted .number {
+            color: var(--warning-color);
+        }
+
+        .stat-card.process .number {
+            color: var(--secondary-color);
+        }
+
+        .stat-card.completed .number {
+            color: var(--success-color);
+        }
+
+        .stat-card.rejected .number {
+            color: var(--accent-color);
+        }
+
+        /* Table */
+        .table-wrapper {
+            background: white;
+            border-radius: 15px;
+            overflow-x: auto;
+            box-shadow: var(--box-shadow);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--light-color);
+        }
+
+        th {
+            background: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-submitted {
+            background: #fff3e0;
+            color: #f39c12;
+        }
+
+        .status-process {
+            background: #e3f2fd;
+            color: #3498db;
+        }
+
+        .status-completed {
+            background: #e8f5e9;
+            color: #27ae60;
+        }
+
+        .status-rejected {
+            background: #ffebee;
+            color: #e74c3c;
+        }
+
+        /* Select Dropdown */
+        select.status-select {
+            padding: 6px 10px;
+            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            background: white;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        select.status-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none;
+        }
+
+        /* User Info */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info span {
+            color: var(--light-color);
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            th,
+            td {
+                font-size: 12px;
+                padding: 8px;
+            }
+
+            .btn-small {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            padding: 0;
+            width: 90%;
+            max-width: 600px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            border-radius: var(--border-radius) var(--border-radius) 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .modal-header h3 i {
+            margin-right: 10px;
+        }
+
+        .close-modal {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .detail-row {
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            border-bottom: 1px solid var(--light-color);
+            padding-bottom: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            width: 140px;
+            color: var(--primary-color);
+        }
+
+        .detail-value {
+            flex: 1;
+            color: #555;
+        }
+
+        .detail-section {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: var(--border-radius);
+            margin: 10px 0;
+        }
+
+        .detail-section h4 {
+            color: var(--secondary-color);
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .status-badge-detail {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* ============ DARK MODE STYLES ============ */
+        body.dark-mode {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        }
+
+        body.dark-mode .card,
+        body.dark-mode .header,
+        body.dark-mode .hero,
+        body.dark-mode .admin-header,
+        body.dark-mode .stat-card,
+        body.dark-mode .table-wrapper,
+        body.dark-mode .login-card,
+        body.dark-mode .modal-content {
+            background: #373750;
+            color: #ffffff;
+        }
+
+        body.dark-mode .card h2,
+        body.dark-mode .card h3,
+        body.dark-mode .card h4,
+        body.dark-mode .header h1 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .form-control,
+        body.dark-mode input,
+        body.dark-mode select,
+        body.dark-mode textarea {
+            background: #2d2d3a;
+            border-color: #3d3d4a;
+            color: #e0e0e0;
+        }
+
+
+        body.dark-mode .stat-card.total .number {
+            color: var(--light-color);
+        }
+
+        body.dark-mode .login-card h2 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .form-control:focus {
+            border-color: #667eea;
+        }
+
+        body.dark-mode table {
+            background: #1e1e2e;
+        }
+
+        body.dark-mode th {
+            background: #0f0f1a;
+            color: #ffffff;
+        }
+
+        body.dark-mode td {
+            border-bottom-color: #2d2d3a;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode tr:hover {
+            background: #2d2d3a;
+        }
+
+        body.dark-mode .status-submitted {
+            background: #2d2d00;
+            color: #f39c12;
+        }
+
+        body.dark-mode .status-process {
+            background: #001a2d;
+            color: #3498db;
+        }
+
+        body.dark-mode .status-completed {
+            background: #002d1a;
+            color: #27ae60;
+        }
+
+        body.dark-mode .status-rejected {
+            background: #2d0000;
+            color: #e74c3c;
+        }
+
+        body.dark-mode .alert-success {
+            background: #002d1a;
+            color: #27ae60;
+        }
+
+        body.dark-mode .file-upload {
+            background: #2d2d3a;
+            border-color: #3d3d4a;
+        }
+
+        body.dark-mode .report-card {
+            background: #2d2d3a;
+            border-color: #3d3d4a;
+        }
+
+        body.dark-mode .report-summary {
+            background: #2d2d3a;
+        }
+
+        body.dark-mode .modal-content {
+            background: #1e1e2e;
+            color: #ffffff;
+        }
+
+        body.dark-mode .modal-header {
+            background: #0f0f1a;
+            border-bottom: 1px solid #2d2d3a;
+        }
+
+        body.dark-mode .modal-header h3,
+        body.dark-mode .modal-header h3 i {
+            color: #ffffff;
+        }
+
+        body.dark-mode .close-modal {
+            color: #ffffff;
+        }
+
+        body.dark-mode .close-modal:hover {
+            color: var(--accent-color);
+        }
+
+        body.dark-mode .modal-body {
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .detail-row {
+            border-bottom-color: #2d2d3a;
+        }
+
+        body.dark-mode .detail-label {
+            color: #a0a0a0;
+        }
+
+        body.dark-mode .detail-value {
+            color: #ffffff;
+        }
+
+        body.dark-mode .detail-section {
+            background: #2d2d3a;
+        }
+
+        body.dark-mode .detail-section h4 {
+            color: #667eea;
+        }
+
+        body.dark-mode .status-badge-detail {
+            color: #ffffff;
+        }
+
+        /* Dark Mode Toggle Button */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            z-index: 999;
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #667eea;
+        }
+
+        body.dark-mode .login-card {
+            background: #1e1e2e;
+            color: #e0e0e0;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            z-index: 9999;
+            /* ← Pastikan tinggi */
+            font-size: 1.2rem;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        body.dark-mode .theme-toggle {
+            background: #667eea;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Halaman Login -->
+    <div id="loginPage" class="login-container">
+        <button class="theme-toggle" id="themeToggleLogin" title="Ganti Tema"
+            style="position: fixed; bottom: 20px; right: 20px;">
+            <i class="fas fa-moon"></i>
+        </button>
+        <div class="login-card">
+            <h2> Admin Panel</h2>
+            <p style="color: var(--gray-color); margin-bottom: 20px;">Sistem Pengaduan Pelanggaran Pendidikan</p>
+            <form id="loginForm">
+                <input type="text" id="username" placeholder="Username" required>
+                <input type="password" id="password" placeholder="Password" required>
+                <button type="submit"><i class="fas fa-sign-in-alt"></i> Login</button>
+            </form>
+            <div id="loginError" class="error-msg"></div>
+            <p style="margin-top: 20px; font-size: 12px; color: var(--gray-color);">
+                <i class="fas fa-info-circle"></i> Default: admin / admin123
+            </p>
+        </div>
+    </div>
+
+    <!-- Halaman Admin -->
+    <div id="adminPanel" class="hidden">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <h1><i class="fas fa-gavel"></i> Dashboard Admin Pengaduan</h1>
+                <div class="user-info">
+                    <span id="adminName"><i class="fas fa-user-shield"></i> Admin</span>
+                    <button id="logoutBtn" class="btn btn-danger"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </div>
+
+            <!-- Statistik Cards -->
+            <div class="stats">
+                <div class="stat-card total">
+                    <h3><i class="fas fa-chart-line"></i> Total Pengaduan</h3>
+                    <div class="number" id="statTotal">0</div>
+                </div>
+                <div class="stat-card submitted">
+                    <h3><i class="fas fa-clock"></i> Menunggu</h3>
+                    <div class="number" id="statSubmitted">0</div>
+                </div>
+                <div class="stat-card process">
+                    <h3><i class="fas fa-spinner"></i> Diproses</h3>
+                    <div class="number" id="statProcess">0</div>
+                </div>
+                <div class="stat-card completed">
+                    <h3><i class="fas fa-check-circle"></i> Selesai</h3>
+                    <div class="number" id="statCompleted">0</div>
+                </div>
+                <div class="stat-card rejected">
+                    <h3><i class="fas fa-times-circle"></i> Ditolak</h3>
+                    <div class="number" id="statRejected">0</div>
+                </div>
+            </div>
+
+            <!-- Tabel Pengaduan -->
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID Laporan</th>
+                            <th>Pelapor</th>
+                            <th>NIM/NIS</th>
+                            <th>Jenis Pelanggaran</th>
+                            <th>Tgl Kejadian</th>
+                            <th>Lokasi</th>
+                            <th>Status</th>
+                            <th>Bukti</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <tr>
+                            <td colspan="9" style="text-align: center; padding: 40px;">
+                                <i class="fas fa-spinner fa-pulse"></i> Memuat data...
+                            </td>
+                        </tr>
+
+                        <!-- Modal Detail Laporan -->
+                        <div id="detailModal" class="modal">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h3><i class="fas fa-file-alt"></i> Detail Laporan</h3>
+                                    <span class="close-modal">&times;</span>
+                                </div>
+                                <div class="modal-body" id="modalBody">
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Dark/Light Mode Toggle Button -->
+                        <button class="theme-toggle" id="themeToggle" title="Ganti Tema">
+                            <i class="fas fa-moon"></i>
+                        </button>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API = 'http://localhost:3000/api';
+
+        // LOGIN
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            document.getElementById('loginError').textContent = '';
+
+            try {
+                const res = await fetch(`${API}/admin/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    document.getElementById('loginPage').classList.add('hidden');
+                    document.getElementById('adminPanel').classList.remove('hidden');
+                    document.getElementById('adminName').innerHTML = `<i class="fas fa-user-shield"></i> ${data.user.username}`;
+                    loadDashboard();
+                    loadPengaduan();
+                } else {
+                    document.getElementById('loginError').textContent = 'Error' + data.message;
+                }
+            } catch (error) {
+                document.getElementById('loginError').textContent = 'Error: ' + error.message;
+            }
+        });
+
+        // LOGOUT
+        document.getElementById('logoutBtn').addEventListener('click', async () => {
+            await fetch(`${API}/admin/logout`, { method: 'POST' });
+            location.reload();
+        });
+
+        // LOAD DASHBOARD STATS
+        async function loadDashboard() {
+            try {
+                const res = await fetch(`${API}/admin/dashboard`);
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('statTotal').textContent = data.data.total;
+                    document.getElementById('statSubmitted').textContent = data.data.submitted;
+                    document.getElementById('statProcess').textContent = data.data.process;
+                    document.getElementById('statCompleted').textContent = data.data.completed;
+                    document.getElementById('statRejected').textContent = data.data.rejected;
+                }
+            } catch (e) {
+                console.error('Error loading dashboard:', e);
+            }
+        }
+
+        // UPDATE SELECT COLOR
+        function updateSelectColor(select) {
+            const status = select.value;
+            select.classList.remove('submitted', 'process', 'completed', 'rejected');
+            if (status === 'submitted') select.classList.add('submitted');
+            else if (status === 'process') select.classList.add('process');
+            else if (status === 'completed') select.classList.add('completed');
+            else if (status === 'rejected') select.classList.add('rejected');
+        }
+
+        // LOAD ALL PENGADUAN
+        async function loadPengaduan() {
+            try {
+                const res = await fetch(`${API}/admin/pengaduan`);
+                const data = await res.json();
+                const tbody = document.getElementById('adminTableBody');
+
+                if (data.success && data.data.length > 0) {
+                    tbody.innerHTML = data.data.map(p => `
+                        <tr>
+                            <td><strong>${p.report_id}</strong></td>
+                            <td>${escapeHtml(p.reporter_name)}</td>
+                            <td>${p.reporter_id}</td>
+                            <td>${p.violation_type}</td>
+                            <td>${formatDate(p.violation_date)}</td>
+                            <td>${escapeHtml(p.violation_location)}</td>
+                            <td>
+                                <select class="status-select ${p.status}" data-id="${p.id}" onchange="updateSelectColor(this)">
+                                    <option value="submitted" ${p.status === 'submitted' ? 'selected' : ''}>Menunggu</option>
+                                    <option value="process" ${p.status === 'process' ? 'selected' : ''}>Diproses</option>
+                                    <option value="completed" ${p.status === 'completed' ? 'selected' : ''}>Selesai</option>
+                                    <option value="rejected" ${p.status === 'rejected' ? 'selected' : ''}>Ditolak</option>
+                                </select>
+                            </td>
+                            <td>
+                                ${p.file_name ? `<a href="/uploads/${p.file_name}" target="_blank" class="btn btn-small btn-primary"><i class="fas fa-download"></i> Lihat</a>` : '<span style="color: #95a5a6;">-</span>'}
+                            </td>
+                            <td>
+                                <button class="btn btn-small btn-primary" onclick="viewDetail(${p.id})"><i class="fas fa-info-circle"></i> Detail</button>
+                                <button class="btn btn-small btn-danger" onclick="deletePengaduan(${p.id})"><i class="fas fa-trash"></i> Hapus</button>
+                            </td>
+                        </tr>
+                    `).join('');
+
+                    // Event listener untuk change status
+                    document.querySelectorAll('.status-select').forEach(select => {
+                        let statusLama = select.value;
+
+                        select.addEventListener('change', async (e) => {
+                            const id = select.dataset.id;
+                            const statusBaru = select.value;
+                            const yakin = confirm(`Ubah status dari "${statusLama}" menjadi "${statusBaru}"?`);
+
+                            if (!yakin) {
+                                select.value = statusLama;
+                                if (typeof updateSelectColor === "function") {
+                                    updateSelectColor(select); // Tarik balik warnanya
+                                }
+                                return;
+                            }
+
+                            try {
+                                const res = await fetch(`${API}/admin/pengaduan/${id}/status`, {
+                                    method: 'PUT',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({
+                                        status: statusBaru,
+                                        status_notes: ''
+                                    })
+                                });
+
+                                if (res.ok) {
+                                    alert('Berhasil diperbarui!');
+                                    statusLama = statusBaru;
+
+                                    if (typeof updateSelectColor === "function") updateSelectColor(select);
+
+                                    if (typeof loadDashboard === "function") loadDashboard();
+                                    if (typeof loadPengaduan === "function") loadPengaduan();
+                                } else {
+                                    alert('Gagal update di server');
+                                    select.value = statusLama;
+                                }
+                            } catch (err) {
+                                alert('Error Koneksi');
+                                select.value = statusLama;
+                            }
+                        });
+                    });
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px;"><i class="fas fa-inbox"></i> Belum ada pengaduan</td></tr>';
+                }
+            } catch (e) {
+                console.error('Error loading pengaduan:', e);
+                document.getElementById('adminTableBody').innerHTML = '<tr><td colspan="9" style="text-align: center; padding: 40px; color: #e74c3c;"><i class="fas fa-exclamation-triangle"></i> Error memuat data</td></tr>';
+            }
+        }
+
+        // VIEW DETAIL 
+        window.viewDetail = async (id) => {
+            const res = await fetch(`${API}/admin/pengaduan`, { credentials: 'include' });
+            const data = await res.json();
+            const p = data.data.find(item => item.id === id);
+
+            if (p) {
+                const modal = document.getElementById('detailModal');
+                const modalBody = document.getElementById('modalBody');
+
+                //konten modal
+                modalBody.innerHTML = `
+            <div class="detail-row">
+                <div class="detail-label"><i class="fas fa-hashtag"></i> ID Laporan:</div>
+                <div class="detail-value"><strong>${p.report_id}</strong></div>
+            </div>
+            
+            <div class="detail-section">
+                <h4><i class="fas fa-user"></i> Identitas Pelapor</h4>
+                <div class="detail-row">
+                    <div class="detail-label">Nama Lengkap:</div>
+                    <div class="detail-value">${escapeHtml(p.reporter_name)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">NIM/NIS:</div>
+                    <div class="detail-value">${p.reporter_id}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Email:</div>
+                    <div class="detail-value">${p.reporter_email}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Peran:</div>
+                    <div class="detail-value">${p.reporter_role}</div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h4><i class="fas fa-exclamation-triangle"></i> Detail Pelanggaran</h4>
+                <div class="detail-row">
+                    <div class="detail-label">Jenis Pelanggaran:</div>
+                    <div class="detail-value">${p.violation_type}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tanggal Kejadian:</div>
+                    <div class="detail-value">${formatDate(p.violation_date)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Waktu Kejadian:</div>
+                    <div class="detail-value">${p.violation_time || '-'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Lokasi:</div>
+                    <div class="detail-value">${escapeHtml(p.violation_location)}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Deskripsi:</div>
+                    <div class="detail-value">${escapeHtml(p.violation_description)}</div>
+                </div>
+            </div>
+            
+            <div class="detail-section">
+                <h4><i class="fas fa-chart-line"></i> Status Penanganan</h4>
+                <div class="detail-row">
+                    <div class="detail-label">Status Laporan:</div>
+                    <div class="detail-value">
+                        <span class="status-badge-detail ${getStatusClass(p.status)}">${getStatusText(p.status)}</span>
+                    </div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Catatan:</div>
+                    <div class="detail-value">${p.status_notes || '-'}</div>
+                </div>
+                <div class="detail-row">
+                    <div class="detail-label">Tanggal Laporan:</div>
+                    <div class="detail-value">${formatDate(p.submission_date)}</div>
+                </div>
+            </div>
+        `;
+
+                modal.style.display = 'block';
+
+                document.querySelector('.close-modal').onclick = () => {
+                    modal.style.display = 'none';
+                };
+
+                window.onclick = (event) => {
+                    if (event.target === modal) {
+                        modal.style.display = 'none';
+                    }
+                };
+            }
+        };
+
+        function getStatusClass(status) {
+            return `status-${status}`;
+        }
+        // DELETE PENGADUAN
+        window.deletePengaduan = async (id) => {
+            if (confirm(' Yakin ingin menghapus laporan ini?\n\nTindakan ini tidak dapat dibatalkan!')) {
+                const res = await fetch(`${API}/admin/pengaduan/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert(' Laporan berhasil dihapus!');
+                    loadDashboard();
+                    loadPengaduan();
+                } else {
+                    alert(' Gagal menghapus laporan');
+                }
+            }
+        };
+
+        // UTILITY FUNCTIONS
+        function getStatusText(status) {
+            const map = {
+                submitted: 'Diajukan',
+                process: 'Diproses',
+                completed: 'Selesai',
+                rejected: 'Ditolak'
+            };
+            return map[status] || status;
+        }
+
+        function formatDate(dateString) {
+            if (!dateString) return '-';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('id-ID', {
+                day: 'numeric',
+                month: 'long',
+                year: 'numeric'
+            });
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // dark mode
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                // Update semua tombol toggle
+                document.querySelectorAll('.theme-toggle').forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-sun"></i>';
+                });
+            }
+        }
+
+        function toggleTheme() {
+            const body = document.body;
+
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+                document.querySelectorAll('.theme-toggle').forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-moon"></i>';
+                });
+            } else {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+                document.querySelectorAll('.theme-toggle').forEach(btn => {
+                    btn.innerHTML = '<i class="fas fa-sun"></i>';
+                });
+            }
+        }
+
+        // Inisialisasi saat halaman dimuat
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+
+            document.querySelectorAll('.theme-toggle').forEach(btn => {
+                btn.addEventListener('click', toggleTheme);
+            });
+        });
+    </script>
+</body>
+
+</html>

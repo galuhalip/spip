@@ -1,18 +1,19 @@
 const mysql = require("mysql2");
 
 const pool = mysql.createPool({
-  host: "localhost",
-  user: "root",
-  password: "",
-  database: "db_pengaduan",
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  port: process.env.DB_PORT,
+  ssl: {
+    rejectUnauthorized: false, // ⬅️ Tambahkan baris ini agar mau konek ke Aiven Cloud
+  },
 });
 
 const promisePool = pool.promise();
 
-// Test koneksi
+// Test koneksi x
 pool.getConnection((err, connection) => {
   if (err) {
     console.error("Gagal konek ke database:", err.message);

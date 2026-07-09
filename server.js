@@ -7,6 +7,7 @@ const fs = require("fs");
 const db = require("./db");
 
 const app = express();
+// app.use(express.static("public"));
 const nodemailer = require("nodemailer");
 require("dotenv").config();
 

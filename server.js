@@ -226,15 +226,16 @@ app.use(
 );
 
 // Setup upload folder
-const uploadDir = "./uploads";
+const uploadDir = process.env.VERCEL ? "/tmp/uploads" : "./uploads";
+
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true }); // Ditambahkan { recursive: true } agar aman saat membuat subfolder
 }
 
 // Konfigurasi upload file
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, "uploads/");
+    cb(null, uploadDir); // ⬅️ Menggunakan variabel uploadDir yang sudah dinamis
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
